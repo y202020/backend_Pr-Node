@@ -21,7 +21,8 @@ const registerUser = asyncHandler(async (req, res) => {
 
     //************** 1 *********
     const { fullname, username, email, password } = req.body
-    console.log("email is:", email);
+    // console.log("email is:", email);
+    // console.log("Body is:", req.body);
 
     // if (fullname === "") {
     //     throw new ApiError(400,"fullname required")
@@ -44,16 +45,22 @@ const registerUser = asyncHandler(async (req, res) => {
     }
     
     //************** 4 *********
-    console.log("Multer response for files:",req.files)
+    // console.log("Multer response for files:",req.files)
     const avatarLocalPath = req.files?.avatar[0]?.path;
-    const coverImageLocalPath = req.files?.coverImage[0]?.path;
-
+    // const coverImageLocalPath = req.files?.coverImage[0]?.path;
+    let coverImagePath;
+    if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
+        coverImagePath = req.files?.coverImage[0]?.path;
+    }
     if (!avatarLocalPath) throw new ApiError(400, "avatar required");
 
     //************** 5 *********
 
     const avatar = await uploadOnCloudinary(avatarLocalPath)
-    const coverImage = await uploadOnCloudinary(coverImageLocalPath)
+    const coverImage = await uploadOnCloudinary(coverImagePath)
+
+  
+
 
     if (!avatar) throw new ApiError(400, "avatar required");
     
@@ -64,7 +71,7 @@ const registerUser = asyncHandler(async (req, res) => {
         coverImage: coverImage?.url || "",
         email,
         password,
-        username:username.toLowerCase
+        username:username.toLowerCase()
     })
 
     //************** 7 *********
