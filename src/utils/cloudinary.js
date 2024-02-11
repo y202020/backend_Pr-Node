@@ -1,5 +1,6 @@
 import { v2 as cloudinary} from "cloudinary";
 import fs from "fs";
+import { ApiError } from "./ApiError.js";
 
 
          
@@ -28,6 +29,14 @@ const uploadOnCloudinary = async (localPath) => {
 }
 
 
-export {uploadOnCloudinary}
+const unlinkImage = async (localPath) => {
+    if (!localPath) {
+        throw new ApiError(400, "Not local file found !");
+    }
+    fs.unlinkSync(localPath) //remove the locally saved temp file .
+}
+
+
+export {uploadOnCloudinary, unlinkImage}
   
 
